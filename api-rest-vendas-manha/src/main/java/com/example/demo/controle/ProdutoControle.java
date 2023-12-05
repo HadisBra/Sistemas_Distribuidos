@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -35,9 +36,24 @@ public class ProdutoControle {
 
     }
 
-@PostMapping
+    @DeleteMapping ("/{id}")
+    public void delete (@PathVariable long id)
+    {
+        repository.findAndDelete(id);
+       }
+
+
+    @PostMapping
     public Produto insert(@RequestBody Produto produto)
     {
+        return repository.save(produto);
+    }
+    @PutMapping("{id}")
+    public Produto update(@PathVariable long id, @RequestBody Produto produto)
+    {
+       final var msg="O id informado não concide com id do objeto passado";
+        if(id != produto.getId())
+            throw  new ResponseStatusException(HttpStatus.CONFLICT, msg);
         return repository.save(produto);
     }
 }
